@@ -117,11 +117,17 @@ export default function App(props) {
     setSpinnerOn(true)
     axiosWithAuth().delete(`${articlesUrl}/${article_id}`)
       .then(res => {
-        console.log(res.data)
         setSpinnerOn(false)
         setMessage(res.data.message)
-        getArticles()
-      })
+        // getArticles()
+        axiosWithAuth().get(articlesUrl)
+        .then(res => {
+          setArticles(res.data.articles)
+        })
+        .catch(err => {
+          setMessage(err.response)
+          })
+        })
       .catch(err => {
         setMessage(err.response)
       })
