@@ -19,14 +19,14 @@ export default function App(props) {
 
   // ✨ Research `useNavigate` in React Router v.6
   const navigate = useNavigate()
-  const redirectToLogin = () => { //Done
+  const redirectToLogin = () => { // DONE
     navigate('/')
   }
-  const redirectToArticles = () => { //Done
+  const redirectToArticles = () => { // DONE
     navigate('/articles')
   }
 
-  const logout = () => { //Done
+  const logout = () => { // DONE
     setMessage('')
     if(localStorage.getItem('token')){
       localStorage.removeItem('token')
@@ -57,8 +57,8 @@ export default function App(props) {
         setSpinnerOn(false)
       })
       .catch(err => {
-        setMessage(err.response)
         setSpinnerOn(false)
+        setMessage(err.response)
       })
   }
 
@@ -71,6 +71,7 @@ export default function App(props) {
       setArticles(res.data.articles)
     })
     .catch(err => {
+      setSpinnerOn(false)
       setMessage(err.response)
       if(err.response.status === 401) {
         redirectToLogin()
@@ -86,18 +87,26 @@ export default function App(props) {
     // Don't forget to turn off the spinner!
   }
 
-  const postArticle = article => {
+  const postArticle = article => { // DONE
     setMessage('')
     // ✨ implement
     // The flow is very similar to the `getArticles` function.
     // You'll know what to do! Use log statements or breakpoints
     // to inspect the response from the server.
     setSpinnerOn(true)
-    // axios call here
-    axiosWithAuth().get(articlesUrl)
+      axiosWithAuth().post(articlesUrl, article)
       .then(res => {
+        console.log(res.data)
         setSpinnerOn(false)
         setMessage(res.data.message)
+        setArticles(prevArticles => [...prevArticles, res.data.article])
+      })
+      .catch(err => {
+        setSpinnerOn(false)
+        setMessage(err.response)
+        if(err.response.status === 401) {
+          redirectToLogin()
+        }
       })
   }
 
@@ -111,7 +120,7 @@ export default function App(props) {
     setMessage(res.data.message)
   }
 
-  const deleteArticle = article_id => {
+  const deleteArticle = article_id => { // DONE
     setMessage('')
     // ✨ implement
     setSpinnerOn(true)
@@ -125,10 +134,12 @@ export default function App(props) {
           setArticles(res.data.articles)
         })
         .catch(err => {
+          setSpinnerOn(false)
           setMessage(err.response)
           })
         })
       .catch(err => {
+        setSpinnerOn(false)
         setMessage(err.response)
       })
   }
@@ -149,8 +160,8 @@ export default function App(props) {
           <Route exact path="/" element={<LoginForm login={login}/>} />
           <Route exact path="articles" element={
             <>
-              <ArticleForm setCurrentArticleId={setCurrentArticleId} postArticle={postArticle} updateArticle={updateArticle}/>
-              <Articles setCurrentArticleId={setCurrentArticleId} articles={articles} deleteArticle={deleteArticle} updateArticle={updateArticle} getArticles={getArticles}/>
+              <ArticleForm currentArticle={currentArticleId} setCurrentArticleId={setCurrentArticleId} postArticle={postArticle} updateArticle={updateArticle}/>
+              <Articles currentArticleId={currentArticleId} setCurrentArticleId={setCurrentArticleId} articles={articles} deleteArticle={deleteArticle} updateArticle={updateArticle} getArticles={getArticles}/>
             </>
           } />
         </Routes>
