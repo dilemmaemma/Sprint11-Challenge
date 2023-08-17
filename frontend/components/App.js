@@ -5,6 +5,7 @@ import LoginForm from './LoginForm'
 import Message from './Message'
 import ArticleForm from './ArticleForm'
 import Spinner from './Spinner'
+import axiosWithAuth from '../axios/axiosWithAuth'
 
 const articlesUrl = 'http://localhost:9000/api/articles'
 const loginUrl = 'http://localhost:9000/api/login'
@@ -18,14 +19,15 @@ export default function App(props) {
 
   // ✨ Research `useNavigate` in React Router v.6
   const navigate = useNavigate()
-  const redirectToLogin = () => {
+  const redirectToLogin = () => { //Done
     navigate('/')
   }
-  const redirectToArticles = () => {
+  const redirectToArticles = () => { //Done
     navigate('/articles')
   }
 
-  const logout = () => {
+  const logout = () => { //Done
+    setMessage('')
     if(localStorage.getItem('token')){
       localStorage.removeItem('token')
       redirectToLogin()
@@ -45,13 +47,24 @@ export default function App(props) {
     // On success, we should set the token to local storage in a 'token' key,
     // put the server success message in its proper state, and redirect
     // to the Articles screen. Don't forget to turn off the spinner!
+    setMessage('')
     setSpinnerOn(true)
-    redirectToArticles()
-    setSpinnerOn(false)
-    setMessage(`Here are your articles, ${username}!`)
+    axiosWithAuth().post(loginUrl, {username, password})
+      .then(res => {
+        console.log(res.data)
+        localStorage.setItem('token', res.data.payload)
+        redirectToArticles()
+        setSpinnerOn(false)
+        setMessage(`Here are your articles, ${username}!`)
+      })
+      .catch(err => {
+        setMessage(err.response)
+        setSpinnerOn(false)
+      })
   }
 
   const getArticles = () => {
+    setMessage('')
     // ✨ implement
     // We should flush the message state, turn on the spinner
     // and launch an authenticated request to the proper endpoint.
@@ -63,6 +76,7 @@ export default function App(props) {
   }
 
   const postArticle = article => {
+    setMessage('')
     // ✨ implement
     // The flow is very similar to the `getArticles` function.
     // You'll know what to do! Use log statements or breakpoints
@@ -74,6 +88,7 @@ export default function App(props) {
   }
 
   const updateArticle = ({ article_id, article }) => {
+    setMessage('')
     // ✨ implement
     // You got this!
     setSpinnerOn(true)
@@ -83,6 +98,7 @@ export default function App(props) {
   }
 
   const deleteArticle = article_id => {
+    setMessage('')
     // ✨ implement
     setSpinnerOn(true)
     // axios call here
