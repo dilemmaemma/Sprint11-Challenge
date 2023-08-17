@@ -51,7 +51,6 @@ export default function App(props) {
     setSpinnerOn(true)
     axiosWithAuth().post(loginUrl, {username, password})
       .then(res => {
-        console.log(res.data.message)
         localStorage.setItem('token', res.data.token)
         redirectToArticles()
         setMessage(res.data.message)
@@ -64,17 +63,16 @@ export default function App(props) {
   }
 
   const getArticles = () => { // DONE
-    // setMessage('')
     setSpinnerOn(true)
     axiosWithAuth().get(articlesUrl)
     .then(res => {
       setSpinnerOn(false)
-      if(message.includes('Welcome')) setMessage(res.data.message)
+      setMessage(res.data.message)
       setArticles(res.data.articles)
     })
     .catch(err => {
       setMessage(err.response)
-      if(err.includes('401')) {
+      if(err.response.status === 401) {
         redirectToLogin()
       }
     })
