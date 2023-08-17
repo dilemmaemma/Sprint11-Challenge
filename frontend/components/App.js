@@ -117,11 +117,10 @@ export default function App(props) {
     setMessage('')
     // ✨ implement
     setSpinnerOn(true)
-    axios.delete(`${articlesUrl}/${article_id}`)
+    axiosWithAuth().delete(`${articlesUrl}/${article_id}`)
       .then(res => {
         setSpinnerOn(false)
         setMessage(res.data.message)
-        redirectToArticles()
       })
       .catch(err => {
         setMessage(err.response)
