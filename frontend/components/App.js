@@ -53,9 +53,9 @@ export default function App(props) {
       .then(res => {
         console.log(res.data)
         localStorage.setItem('token', res.data.payload)
-        redirectToArticles()
         setSpinnerOn(false)
         setMessage(`Here are your articles, ${username}!`)
+        redirectToArticles()
       })
       .catch(err => {
         setMessage(err.response)
@@ -119,8 +119,8 @@ export default function App(props) {
           <NavLink id="articlesScreen" to="/articles">Articles</NavLink>
         </nav>
         <Routes>
-          <Route path="/" element={<LoginForm login={login}/>} />
-          <Route path="articles" element={
+          <Route exact path="/" element={<LoginForm login={login}/>} />
+          <Route exact path="articles" element={
             <>
               <ArticleForm />
               <Articles deleteArticle={deleteArticle} updateArticle={updateArticle} postArticle={postArticle} getArticles={getArticles}/>
