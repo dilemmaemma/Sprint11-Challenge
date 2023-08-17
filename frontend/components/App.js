@@ -64,12 +64,12 @@ export default function App(props) {
   }
 
   const getArticles = () => { // DONE
-    setMessage('')
+    // setMessage('')
     setSpinnerOn(true)
     axiosWithAuth().get(articlesUrl)
     .then(res => {
       setSpinnerOn(false)
-      setMessage(res.data.message)
+      if(message.includes('Welcome')) setMessage(res.data.message)
       setArticles(res.data.articles)
     })
     .catch(err => {
@@ -119,6 +119,7 @@ export default function App(props) {
     setSpinnerOn(true)
     axiosWithAuth().delete(`${articlesUrl}/${article_id}`)
       .then(res => {
+        console.log(res.data)
         setSpinnerOn(false)
         setMessage(res.data.message)
         getArticles()
