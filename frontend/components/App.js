@@ -121,6 +121,7 @@ export default function App(props) {
       .then(res => {
         setSpinnerOn(false)
         setMessage(res.data.message)
+        getArticles()
       })
       .catch(err => {
         setMessage(err.response)
