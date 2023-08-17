@@ -112,9 +112,10 @@ export default function App(props) {
 
   const updateArticle = ({ article_id, article }) => {
     setMessage('')
+    setCurrentArticleId(article_id)
+    setSpinnerOn(true)
     // ✨ implement
     // You got this!
-    setSpinnerOn(true)
     // axios call here
     setSpinnerOn(false)
     setMessage(res.data.message)
