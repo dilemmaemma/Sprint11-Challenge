@@ -5,7 +5,14 @@ import PT from 'prop-types'
 export default function Articles(props) {
   // ✨ where are my props? Destructure them here
 
-  const {setCurrentArticleId, currentArticleId, articles, deleteArticle, updateArticle, getArticles} = props
+  const {
+    setCurrentArticleId, 
+    currentArticleId, 
+    articles, 
+    deleteArticle, 
+    updateArticle, 
+    getArticles
+  } = props
 
   if(!localStorage.getItem('token')) return <Navigate to='/'/>
 
@@ -13,6 +20,10 @@ export default function Articles(props) {
     // ✨ grab the articles here, on first render only
     getArticles()
   }, [])
+
+  const isDisabled = () => {
+    return currentArticleId ? true : false
+  }
 
   return (
     // ✨ fix the JSX: replace `Function.prototype` with actual functions
@@ -31,8 +42,8 @@ export default function Articles(props) {
                   <p>Topic: {art.topic}</p>
                 </div>
                 <div>
-                  <button disabled={true} onClick={() => updateArticle(art.article_id)}>Edit</button>
-                  <button onClick={() => deleteArticle(art.article_id)}>Delete</button>
+                  <button disabled={isDisabled()} onClick={() => updateArticle(art)}>Edit</button>
+                  <button disabled={isDisabled()} onClick={() => deleteArticle(art.article_id)}>Delete</button>
                 </div>
               </div>
             )

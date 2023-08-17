@@ -7,7 +7,12 @@ export default function ArticleForm(props) {
   const [values, setValues] = useState(initialFormValues)
   // ✨ where are my props? Destructure them here
 
-  const {currentArticle, setCurrentArticleId, postArticle, updateArticle} = props
+  const {
+    currentArticle, 
+    setCurrentArticleId, 
+    postArticle, 
+    updateArticle
+  } = props
 
   useEffect(() => {
     // ✨ implement
@@ -16,9 +21,9 @@ export default function ArticleForm(props) {
     // values of the form. If it's not, we should reset the form back to initial values.
     if (currentArticle) {
       setValues({
-        title: currentArticle.title,
-        text: currentArticle.text,
-        topic: currentArticle.topic
+        title: currentArticle.title || '',
+        text: currentArticle.text || '',
+        topic: currentArticle.topic || '',
       });
     } else {
       setValues(initialFormValues);
@@ -81,7 +86,7 @@ export default function ArticleForm(props) {
       </select>
       <div className="button-group">
         <button disabled={isDisabled()} id="submitArticle">Submit</button>
-        <button disabled={isDisabled()} onClick={cancelEdit}>Cancel edit</button>
+        {currentArticle && <button disabled={isDisabled()} onClick={cancelEdit}>Cancel edit</button>}
       </div>
     </form>
   )

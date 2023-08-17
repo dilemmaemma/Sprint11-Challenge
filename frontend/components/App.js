@@ -15,6 +15,7 @@ export default function App(props) {
   const [message, setMessage] = useState('')
   const [articles, setArticles] = useState([])
   const [currentArticleId, setCurrentArticleId] = useState()
+  const [currentArticle, setCurrentArticle] = useState()
   const [spinnerOn, setSpinnerOn] = useState(false)
 
   // ✨ Research `useNavigate` in React Router v.6
@@ -72,8 +73,8 @@ export default function App(props) {
     })
     .catch(err => {
       setSpinnerOn(false)
-      setMessage(err.response)
-      if(err.response.status === 401) {
+      setMessage(err.response.data.message)
+      if(err.message.includes('401')) {
         redirectToLogin()
       }
     })
@@ -103,22 +104,44 @@ export default function App(props) {
       })
       .catch(err => {
         setSpinnerOn(false)
-        setMessage(err.response)
-        if(err.response.status === 401) {
+        setMessage(err.response.data.message)
+        if(err.message.includes('401')) {
           redirectToLogin()
         }
       })
   }
 
-  const updateArticle = ({ article_id, article }) => {
+  const updateArticle = ({ article_id, title, text, topic }) => {
+    const article = {
+      article_id,
+      title,
+      text,
+      topic
+    }
     setMessage('')
+    setCurrentArticle(article)
     setCurrentArticleId(article_id)
     setSpinnerOn(true)
     // ✨ implement
     // You got this!
     // axios call here
-    setSpinnerOn(false)
-    setMessage(res.data.message)
+    axiosWithAuth().put(`${articlesUrl}/${article_id}`, article)
+      .then(res => {
+        setSpinnerOn(false)
+        setArticles(prevArticles =>
+          prevArticles.map(prevArticle =>
+            prevArticle.article_id === article_id ? res.data.article : prevArticle
+          )
+        )
+        setMessage(res.data.message)
+      })
+      .catch(err => {
+        setSpinnerOn(false)
+        setMessage(err.response.data.message)
+        if(err.message.includes('401')) {
+          redirectToLogin()
+        }
+      })
   }
 
   const deleteArticle = article_id => { // DONE
@@ -161,7 +184,7 @@ export default function App(props) {
           <Route exact path="/" element={<LoginForm login={login}/>} />
           <Route exact path="articles" element={
             <>
-              <ArticleForm currentArticle={currentArticleId} setCurrentArticleId={setCurrentArticleId} postArticle={postArticle} updateArticle={updateArticle}/>
+              <ArticleForm currentArticle={currentArticle} setCurrentArticleId={setCurrentArticle} postArticle={postArticle} updateArticle={updateArticle}/>
               <Articles currentArticleId={currentArticleId} setCurrentArticleId={setCurrentArticleId} articles={articles} deleteArticle={deleteArticle} updateArticle={updateArticle} getArticles={getArticles}/>
             </>
           } />
