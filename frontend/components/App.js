@@ -9,7 +9,7 @@ import Spinner from './Spinner'
 const articlesUrl = 'http://localhost:9000/api/articles'
 const loginUrl = 'http://localhost:9000/api/login'
 
-export default function App() {
+export default function App(props) {
   // ✨ MVP can be achieved with these states
   const [message, setMessage] = useState('')
   const [articles, setArticles] = useState([])
@@ -29,6 +29,7 @@ export default function App() {
     if(localStorage.getItem('token')){
       localStorage.removeItem('token')
       redirectToLogin()
+      setMessage('Goodbye!')
     }
     // ✨ implement
     // If a token is in local storage it should be removed,
@@ -44,7 +45,10 @@ export default function App() {
     // On success, we should set the token to local storage in a 'token' key,
     // put the server success message in its proper state, and redirect
     // to the Articles screen. Don't forget to turn off the spinner!
+    setSpinnerOn(true)
     redirectToArticles()
+    setSpinnerOn(false)
+    setMessage(`Here are your articles, ${username}!`)
   }
 
   const getArticles = () => {
@@ -63,15 +67,27 @@ export default function App() {
     // The flow is very similar to the `getArticles` function.
     // You'll know what to do! Use log statements or breakpoints
     // to inspect the response from the server.
+    setSpinnerOn(true)
+    // axios call here
+    setSpinnerOn(false)
+    setMessage(`Well done, ${props.username}. Greate article!`)
   }
 
   const updateArticle = ({ article_id, article }) => {
     // ✨ implement
     // You got this!
+    setSpinnerOn(true)
+    // axios call here
+    setSpinnerOn(false)
+    setMessage(`Nice update, ${props.username}!`)
   }
 
   const deleteArticle = article_id => {
     // ✨ implement
+    setSpinnerOn(true)
+    // axios call here
+    setSpinnerOn(false)
+    setMessage(`Article ${article_id} was deleted, ${props.username}!`)
   }
 
   return (
@@ -87,11 +103,11 @@ export default function App() {
           <NavLink id="articlesScreen" to="/articles">Articles</NavLink>
         </nav>
         <Routes>
-          <Route path="/" element={<LoginForm />} />
+          <Route path="/" element={<LoginForm login={login}/>} />
           <Route path="articles" element={
             <>
               <ArticleForm />
-              <Articles />
+              <Articles deleteArticle={deleteArticle} updateArticle={updateArticle} postArticle={postArticle} getArticles={getArticles}/>
             </>
           } />
         </Routes>
