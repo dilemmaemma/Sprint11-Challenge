@@ -51,11 +51,11 @@ export default function App(props) {
     setSpinnerOn(true)
     axiosWithAuth().post(loginUrl, {username, password})
       .then(res => {
-        console.log(res.data)
-        localStorage.setItem('token', res.data.payload)
-        setSpinnerOn(false)
-        setMessage(`Here are your articles, ${username}!`)
+        console.log(res.data.message)
+        localStorage.setItem('token', res.data.token)
         redirectToArticles()
+        setMessage(res.data.message)
+        setSpinnerOn(false)
       })
       .catch(err => {
         setMessage(err.response)
@@ -65,6 +65,20 @@ export default function App(props) {
 
   const getArticles = () => {
     setMessage('')
+    setSpinnerOn(true)
+    axiosWithAuth().get(articlesUrl)
+    .then(res => {
+      console.log(res.data)
+      setSpinnerOn(false)
+      setMessage(res.data.message)
+      setArticles(res.data.articles)
+    })
+    .catch(err => {
+      setMessage(err.response)
+      if(err.includes('401')) {
+        navigate('/')
+      }
+    })
     // ✨ implement
     // We should flush the message state, turn on the spinner
     // and launch an authenticated request to the proper endpoint.
@@ -83,8 +97,12 @@ export default function App(props) {
     // to inspect the response from the server.
     setSpinnerOn(true)
     // axios call here
-    setSpinnerOn(false)
-    setMessage(`Well done, ${props.username}. Greate article!`)
+    axiosWithAuth().get(articlesUrl)
+      .then(res => {
+        console.log(res.data)
+        setSpinnerOn(false)
+        setMessage(res.data.message)
+      })
   }
 
   const updateArticle = ({ article_id, article }) => {
@@ -94,23 +112,29 @@ export default function App(props) {
     setSpinnerOn(true)
     // axios call here
     setSpinnerOn(false)
-    setMessage(`Nice update, ${props.username}!`)
+    setMessage(res.data.message)
   }
 
   const deleteArticle = article_id => {
     setMessage('')
     // ✨ implement
     setSpinnerOn(true)
-    // axios call here
-    setSpinnerOn(false)
-    setMessage(`Article ${article_id} was deleted, ${props.username}!`)
+    axios.delete(`${articlesUrl}/${article_id}`)
+      .then(res => {
+        setSpinnerOn(false)
+        setMessage(res.data.message)
+        redirectToArticles()
+      })
+      .catch(err => {
+        setMessage(err.response)
+      })
   }
 
   return (
-    // ✨ fix the JSX: `Spinner`, `Message`, `LoginForm`, `ArticleForm` and `Articles` expect props ❗
+    // ✨ fix the JSX: `Spinner`, `Message`, `LoginForm`, `ArticleForm` and `Articles` expect props ❗DONE
     <>
-      <Spinner />
-      <Message />
+      <Spinner spinnerOn={spinnerOn}/>
+      <Message message={message}/>
       <button id="logout" onClick={logout}>Logout from app</button>
       <div id="wrapper" style={{ opacity: spinnerOn ? "0.25" : "1" }}> {/* <-- do not change this line */}
         <h1>Advanced Web Applications</h1>
@@ -122,8 +146,8 @@ export default function App(props) {
           <Route exact path="/" element={<LoginForm login={login}/>} />
           <Route exact path="articles" element={
             <>
-              <ArticleForm />
-              <Articles deleteArticle={deleteArticle} updateArticle={updateArticle} postArticle={postArticle} getArticles={getArticles}/>
+              <ArticleForm deleteArticle={deleteArticle} updateArticle={updateArticle} postArticle={postArticle} getArticles={getArticles}/>
+              <Articles articles={articles} deleteArticle={deleteArticle} updateArticle={updateArticle} getArticles={getArticles}/>
             </>
           } />
         </Routes>
