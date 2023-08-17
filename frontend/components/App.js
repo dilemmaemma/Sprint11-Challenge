@@ -40,7 +40,7 @@ export default function App(props) {
     // using the helper above.
   }
 
-  const login = ({ username, password }) => {
+  const login = ({ username, password }) => { // DONE
     // ✨ implement
     // We should flush the message state, turn on the spinner
     // and launch a request to the proper endpoint.
@@ -63,12 +63,11 @@ export default function App(props) {
       })
   }
 
-  const getArticles = () => {
+  const getArticles = () => { // DONE
     setMessage('')
     setSpinnerOn(true)
     axiosWithAuth().get(articlesUrl)
     .then(res => {
-      console.log(res.data)
       setSpinnerOn(false)
       setMessage(res.data.message)
       setArticles(res.data.articles)
@@ -76,7 +75,7 @@ export default function App(props) {
     .catch(err => {
       setMessage(err.response)
       if(err.includes('401')) {
-        navigate('/')
+        redirectToLogin()
       }
     })
     // ✨ implement
@@ -99,7 +98,6 @@ export default function App(props) {
     // axios call here
     axiosWithAuth().get(articlesUrl)
       .then(res => {
-        console.log(res.data)
         setSpinnerOn(false)
         setMessage(res.data.message)
       })
@@ -146,8 +144,8 @@ export default function App(props) {
           <Route exact path="/" element={<LoginForm login={login}/>} />
           <Route exact path="articles" element={
             <>
-              <ArticleForm deleteArticle={deleteArticle} updateArticle={updateArticle} postArticle={postArticle} getArticles={getArticles}/>
-              <Articles articles={articles} deleteArticle={deleteArticle} updateArticle={updateArticle} getArticles={getArticles}/>
+              <ArticleForm setCurrentArticleId={setCurrentArticleId} postArticle={postArticle} updateArticle={updateArticle}/>
+              <Articles setCurrentArticleId={setCurrentArticleId} articles={articles} deleteArticle={deleteArticle} updateArticle={updateArticle} getArticles={getArticles}/>
             </>
           } />
         </Routes>
