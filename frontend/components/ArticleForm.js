@@ -46,6 +46,7 @@ export default function ArticleForm(props) {
     } else {
       postArticle(values);
     }
+    setCurrentArticleId(null)
     setValues(initialFormValues);
   }
 

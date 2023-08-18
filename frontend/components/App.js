@@ -111,13 +111,18 @@ export default function App(props) {
       })
   }
 
-  const updateArticle = ({ article_id, title, text, topic }) => {
+  const editArticle = ({ article_id, title, text, topic }) => {
     const article = {
       article_id,
       title,
       text,
       topic
     }
+    setCurrentArticle(article)
+    setCurrentArticleId(article_id)
+  }
+
+  const updateArticle = ({ article_id, article }) => {
     setMessage('')
     setCurrentArticle(article)
     setCurrentArticleId(article_id)
@@ -185,7 +190,7 @@ export default function App(props) {
           <Route exact path="articles" element={
             <>
               <ArticleForm currentArticle={currentArticle} setCurrentArticleId={setCurrentArticleId} postArticle={postArticle} updateArticle={updateArticle}/>
-              <Articles currentArticleId={currentArticleId} setCurrentArticleId={setCurrentArticleId} articles={articles} deleteArticle={deleteArticle} updateArticle={updateArticle} getArticles={getArticles}/>
+              <Articles currentArticleId={currentArticleId} setCurrentArticleId={setCurrentArticleId} articles={articles} deleteArticle={deleteArticle} updateArticle={editArticle} getArticles={getArticles}/>
             </>
           } />
         </Routes>
