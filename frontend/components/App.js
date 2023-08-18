@@ -184,7 +184,7 @@ export default function App(props) {
           <Route exact path="/" element={<LoginForm login={login}/>} />
           <Route exact path="articles" element={
             <>
-              <ArticleForm currentArticle={currentArticle} setCurrentArticleId={setCurrentArticle} postArticle={postArticle} updateArticle={updateArticle}/>
+              <ArticleForm currentArticle={currentArticle} setCurrentArticleId={setCurrentArticleId} postArticle={postArticle} updateArticle={updateArticle}/>
               <Articles currentArticleId={currentArticleId} setCurrentArticleId={setCurrentArticleId} articles={articles} deleteArticle={deleteArticle} updateArticle={updateArticle} getArticles={getArticles}/>
             </>
           } />

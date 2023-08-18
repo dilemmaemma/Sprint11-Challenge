@@ -15,15 +15,16 @@ export default function ArticleForm(props) {
   } = props
 
   useEffect(() => {
+    console.log(currentArticle)
     // ✨ implement
     // Every time the `currentArticle` prop changes, we should check it for truthiness:
     // if it's truthy, we should set its title, text and topic into the corresponding
     // values of the form. If it's not, we should reset the form back to initial values.
     if (currentArticle) {
       setValues({
-        title: currentArticle.title || '',
-        text: currentArticle.text || '',
-        topic: currentArticle.topic || '',
+        title: currentArticle.title,
+        text: currentArticle.text,
+        topic: currentArticle.topic,
       });
     } else {
       setValues(initialFormValues);
